@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Study Hack</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #00ffb3;
+    --accent2: #ff6b6b;
+    --accent3: #7c6fff;
+    --accent4: #ffd93d;
+    --text: #e8e8f0;
+    --muted: #888899;
+    --code-bg: #0d0d18;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,179,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,179,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 60px 24px 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    padding: 4px 14px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 12px;
+    font-weight: 400;
+    animation: fadeDown 0.6s 0.2s ease both;
+  }
+
+  /* NAV PILLS */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 32px auto 48px;
+    animation: fadeDown 0.6s 0.3s ease both;
+  }
+
+  .nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .nav a:hover { color: var(--accent); border-color: var(--accent); background: rgba(0,255,179,0.05); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,255,179,0.08);
+    border: 1px solid rgba(0,255,179,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* CARDS GRID */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover { border-color: var(--accent3); transform: translateY(-2px); }
+
+  .card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #27c93f; }
+
+  .code-lang {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: #c8c8e8;
+  }
+
+  .kw { color: #7c6fff; }
+  .str { color: #ffd93d; }
+  .num { color: #ff6b6b; }
+  .cm { color: #555570; font-style: italic; }
+  .cls { color: #00ffb3; }
+  .met { color: #56d8ff; }
+  .var { color: #e8e8f0; }
+
+  /* TWO COL COMPARE */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+
+  .compare-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 6px 16px;
+    text-transform: uppercase;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.83rem;
+    vertical-align: top;
+  }
+
+  td:first-child { font-family: 'Space Mono', monospace; color: var(--accent3); }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* QUIZ */
+  .quiz-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .quiz-q { font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .quiz-opt:hover { border-color: var(--accent3); color: var(--text); }
+  .quiz-opt.correct { border-color: var(--accent); background: rgba(0,255,179,0.08); color: var(--accent); }
+  .quiz-opt.wrong { border-color: var(--accent2); background: rgba(255,107,107,0.08); color: var(--accent2); }
+
+  .quiz-feedback {
+    margin-top: 12px;
+    font-size: 0.82rem;
+    padding: 8px 14px;
+    border-radius: 4px;
+    display: none;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .feedback-correct { background: rgba(0,255,179,0.08); color: var(--accent); border: 1px solid rgba(0,255,179,0.2); }
+  .feedback-wrong { background: rgba(255,107,107,0.08); color: var(--accent2); border: 1px solid rgba(255,107,107,0.2); }
+
+  /* HIGHLIGHT BOX */
+  .tip {
+    border-left: 3px solid var(--accent4);
+    background: rgba(255,217,61,0.05);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.85rem;
+    color: var(--accent4);
+    margin: 12px 0;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .tip strong { color: var(--accent4); }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 32px 24px 48px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .badge-green { background: rgba(0,255,179,0.12); color: var(--accent); border: 1px solid rgba(0,255,179,0.3); }
+  .badge-red   { background: rgba(255,107,107,0.12); color: var(--accent2); border: 1px solid rgba(255,107,107,0.3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">// Java Study Hack</div>
+  <h1>Master Java<br><span>Before Your Test</span></h1>
+  <p class="subtitle">Input/Output · Arithmetic · Data Types · Code Fixing · Pseudocode ↔ Java</p>
+  <nav class="nav">
+    <a href="#io">01 Input & Output</a>
+    <a href="#arithmetic">02 Arithmetic</a>
+    <a href="#datatypes">03 Data Types</a>
+    <a href="#conversion">04 Conversions</a>
+    <a href="#fix">05 Fix the Code</a>
+    <a href="#pseudo">06 Pseudocode ↔ Java</a>
+    <a href="#quiz">07 Quick Quiz</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- ══ 01 INPUT & OUTPUT ══ -->
+  <section class="section" id="io">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Basic Input &amp; Output</h2>
+    </div>
+
+    <div class="cards" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-label" style="color:var(--accent)">OUTPUT</div>
+        <h3>Printing to Screen</h3>
+        <p><code style="color:var(--accent3)">System.out.println()</code> prints and moves to a new line. <code style="color:var(--accent3)">System.out.print()</code> stays on the same line.</p>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color:var(--accent2)">INPUT</div>
+        <h3>Reading from Keyboard</h3>
+        <p>Import <code style="color:var(--accent3)">java.util.Scanner</code>, create a Scanner object, then use methods like <code style="color:var(--accent3)">nextLine()</code>, <code style="color:var(--accent3)">nextInt()</code>, <code style="color:var(--accent3)">nextDouble()</code>.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">JAVA — Names Input/Output</span>
+      </div>
+      <pre><span class="kw">import</span> java.util.Scanner;
+
+<span class="kw">public class</span> <span class="cls">NameExample</span> {
+    <span class="kw">public static void</span> <span class="met">main</span>(String[] args) {
+
+        <span class="cls">Scanner</span> keyboard = <span class="kw">new</span> <span class="cls">Scanner</span>(System.in);
+
+        <span class="cm">// Ask for and read a name</span>
+        System.out.<span class="met">print</span>(<span class="str">"Enter your first name: "</span>);
+        <span class="cls">String</span> firstName = keyboard.<span class="met">nextLine</span>();
+
+        System.out.<span class="met">print</span>(<span class="str">"Enter your last name: "</span>);
+        <span class="cls">String</span> lastName = keyboard.<span class="met">nextLine</span>();
+
+        <span class="cm">// Print the result</span>
+        System.out.<span class="met">println</span>(<span class="str">"Hello, "</span> + firstName + <span class="str">" "</span> + lastName + <span class="str">"!"</span>);
+
+        <span class="cm">// String concatenation with a number</span>
+        <span class="kw">int</span> age = <span class="num">20</span>;
+        System.out.<span class="met">println</span>(firstName + <span class="str">" is "</span> + age + <span class="str">" years old."</span>);
+
+        keyboard.<span class="met">close</span>();
+    }
+}</pre>
+    </div>
+
+    <div class="tip">⚡ TIP: Use <strong>nextLine()</strong> for text (String). Use <strong>nextInt()</strong> for whole numbers. Use <strong>nextDouble()</strong> for decimals. Never forget to close the scanner!</div>
+
+    <div class="code-block" style="margin-top:16px">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">JAVA — Reading Multiple Inputs</span>
+      </div>
+      <pre><span class="cm">// Storing multiple names in an array</span>
+System.out.<span class="met">print</span>(<span class="str">"How many students? "</span>);
+<span class="kw">int</span> count = keyboard.<span class="met">nextInt</span>();
+keyboard.<span class="met">nextLine</span>();  <span class="cm">// clear leftover newline after nextInt()</span>
+
+<span class="cls">String</span>[] names = <span class="kw">new</span> <span class="cls">String</span>[count];
+
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; count; i++) {
+    System.out.<span class="met">print</span>(<span class="str">"Enter name "</span> + (i + <span class="num">1</span>) + <span class="str">": "</span>);
+    names[i] = keyboard.<span class="met">nextLine</span>();
+}
+
+<span class="cm">// Print all names</span>
+<span class="kw">for</span> (<span class="cls">String</span> name : names) {
+    System.out.<span class="met">println</span>(name);
+}</pre>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 02 ARITHMETIC ══ -->
+  <section class="section" id="arithmetic">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Arithmetic Operations</h2>
+    </div>
+
+    <div class="code-block" style="overflow:auto">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">OPERATORS REFERENCE TABLE</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Operator</th><th>Name</th><th>Example</th><th>Result</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>+</td><td>Addition</td><td>10 + 3</td><td>13</td><td>Also used for String joining</td></tr>
+          <tr><td>-</td><td>Subtraction</td><td>10 - 3</td><td>7</td><td></td></tr>
+          <tr><td>*</td><td>Multiplication</td><td>10 * 3</td><td>30</td><td></td></tr>
+          <tr><td>/</td><td>Division</td><td>10 / 3</td><td>3</td><td>int ÷ int = whole number!</td></tr>
+          <tr><td>/</td><td>Division</td><td>10.0 / 3</td><td>3.333…</td><td>Use double for decimals</td></tr>
+          <tr><td>%</td><td>Modulus</td><td>10 % 3</td><td>1</td><td>Remainder after division</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block" style="margin-top:16px">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">JAVA — All Arithmetic Operations</span>
+      </div>
+      <pre><span class="cls">Scanner</span> keyboard = <span class="kw">new</span> <span class="cls">Scanner</span>(System.in);
+
+System.out.<span class="met">print</span>(<span class="str">"Enter first number: "</span>);
+<span class="kw">double</span> a = keyboard.<span class="met">nextDouble</span>();
+
+System.out.<span class="met">print</span>(<span class="str">"Enter second number: "</span>);
+<span class="kw">double</span> b = keyboard.<span class="met">nextDouble</span>();
+
+System.out.<span class="met">println</span>(<span class="str">"Addition:       "</span> + (a + b));
+System.out.<span class="met">println</span>(<span class="str">"Subtraction:    "</span> + (a - b));
+System.out.<span class="met">println</span>(<span class="str">"Multiplication: "</span> + (a * b));
+System.out.<span class="met">println</span>(<span class="str">"Division:       "</span> + (a / b));
+System.out.<span class="met">println</span>(<span class="str">"Modulus:        "</span> + (a % b));
+
+<span class="cm">// Practical modulus uses</span>
+<span class="kw">int</span> num = <span class="num">17</span>;
+<span class="kw">if</span> (num % <span class="num">2</span> == <span class="num">0</span>)
+    System.out.<span class="met">println</span>(num + <span class="str">" is EVEN"</span>);
+<span class="kw">else</span>
+    System.out.<span class="met">println</span>(num + <span class="str">" is ODD"</span>);</pre>
+    </div>
+
+    <div class="tip">⚡ TIP: <strong>Integer division</strong> truncates decimals — 7 / 2 = 3 (not 3.5). Cast to double first: <strong>(double)7 / 2 = 3.5</strong></div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 03 DATA TYPES ══ -->
+  <section class="section" id="datatypes">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Java Data Types</h2>
+    </div>
+
+    <div class="code-block" style="overflow:auto">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">PRIMITIVE DATA TYPES</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Type</th><th>Size</th><th>Range / Values</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>int</td><td>32-bit</td><td>-2,147,483,648 to 2,147,483,647</td><td>int age = 20;</td></tr>
+          <tr><td>double</td><td>64-bit</td><td>Decimal numbers (15 digits)</td><td>double pi = 3.14;</td></tr>
+          <tr><td>float</td><td>32-bit</td><td>Decimal (6–7 digits precision)</td><td>float x = 3.14f;</td></tr>
+          <tr><td>long</td><td>64-bit</td><td>Very large whole numbers</td><td>long pop = 8000000000L;</td></tr>
+          <tr><td>char</td><td>16-bit</td><td>Single character (Unicode)</td><td>char grade = 'A';</td></tr>
+          <tr><td>boolean</td><td>1-bit</td><td>true or false only</td><td>boolean pass = true;</td></tr>
+          <tr><td>byte</td><td>8-bit</td><td>-128 to 127</td><td>byte b = 100;</td></tr>
+          <tr><td>short</td><td>16-bit</td><td>-32,768 to 32,767</td><td>short s = 1000;</td></tr>
+          <tr><td>String</td><td>Object</td><td>Text (sequence of chars)</td><td>String name = "Java";</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block" style="margin-top:16px">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">JAVA — Declaring Variables</span>
+      </div>
+      <pre><span class="cm">// Syntax:  dataType variableName = value;</span>
+<span class="kw">int</span>     marks      = <span class="num">85</span>;
+<span class="kw">double</span>  average    = <span class="num">73.5</span>;
+<span class="kw">float</span>   price      = <span class="num">9.99</span>f;      <span class="cm">// note the 'f' suffix</span>
+<span class="kw">long</span>    population = <span class="num">8_000_000</span>L; <span class="cm">// note the 'L' suffix</span>
+<span class="kw">char</span>    grade      = <span class="str">'A'</span>;         <span class="cm">// single quotes for char</span>
+<span class="kw">boolean</span> passed     = <span class="kw">true</span>;
+<span class="cls">String</span>  name       = <span class="str">"Alice"</span>;    <span class="cm">// double quotes for String</span></pre>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 04 DATA TYPE CONVERSION ══ -->
+  <section class="section" id="conversion">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Data Type Conversions</h2>
+    </div>
+
+    <div class="cards" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-label" style="color:var(--accent)">WIDENING (Implicit)</div>
+        <h3>Automatic Conversion</h3>
+        <p>Java automatically converts a smaller type to a larger type. No data loss. No casting needed.</p>
+        <p style="margin-top:8px; font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--accent3)">byte → short → int → long → float → double</p>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color:var(--accent2)">NARROWING (Explicit)</div>
+        <h3>Manual Casting Required</h3>
+        <p>Converting a larger type to a smaller type. You must cast manually. May lose precision or data!</p>
+        <p style="margin-top:8px; font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--accent2)">double → float → long → int → short → byte</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">JAVA — Type Casting Examples</span>
+      </div>
+      <pre><span class="cm">// ── WIDENING (automatic) ──────────────────</span>
+<span class="kw">int</span>    i = <span class="num">100</span>;
+<span class="kw">long</span>   l = i;        <span class="cm">// int  → long  ✓ automatic</span>
+<span class="kw">double</span> d = i;        <span class="cm">// int  → double ✓ automatic</span>
+System.out.<span class="met">println</span>(d); <span class="cm">// Output: 100.0</span>
+
+<span class="cm">// ── NARROWING (must cast manually) ────────</span>
+<span class="kw">double</span> pi   = <span class="num">3.9999</span>;
+<span class="kw">int</span>    piInt = (<span class="kw">int</span>) pi;   <span class="cm">// truncates — does NOT round!</span>
+System.out.<span class="met">println</span>(piInt); <span class="cm">// Output: 3  (not 4)</span>
+
+<span class="kw">double</span> score = <span class="num">95.7</span>;
+<span class="kw">int</span>    rounded = (<span class="kw">int</span>) <span class="cls">Math</span>.<span class="met">round</span>(score); <span class="cm">// use Math.round to round</span>
+System.out.<span class="met">println</span>(rounded); <span class="cm">// Output: 96</span>
+
+<span class="cm">// ── String ↔ Number conversions ──────────</span>
+<span class="cls">String</span> numStr = <span class="str">"42"</span>;
+<span class="kw">int</span>    num    = <span class="cls">Integer</span>.<span class="met">parseInt</span>(numStr);    <span class="cm">// String → int</span>
+<span class="kw">double</span> dbl    = <span class="cls">Double</span>.<span class="met">parseDouble</span>(<span class="str">"3.14"</span>); <span class="cm">// String → double</span>
+<span class="cls">String</span> back   = <span class="cls">String</span>.<span class="met">valueOf</span>(num);          <span class="cm">// int → String</span>
+<span class="cls">String</span> back2  = <span class="str">""</span> + num;                   <span class="cm">// shortcut: int → String</span>
+
+<span class="cm">// ── char ↔ int ───────────────────────────</span>
+<span class="kw">char</span> c = <span class="str">'A'</span>;
+<span class="kw">int</span>  ascii = (<span class="kw">int</span>) c;    <span class="cm">// char → int: 65</span>
+<span class="kw">char</span> back3 = (<span class="kw">char</span>) <span class="num">66</span>;  <span class="cm">// int → char: 'B'</span></pre>
+    </div>
+
+    <div class="tip">⚡ TIP: Casting with (int) always <strong>truncates</strong> (chops off) decimals. Use <strong>Math.round()</strong> when you actually need rounding!</div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 05 FIX THE CODE ══ -->
+  <section class="section" id="fix">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Fix the Code</h2>
+    </div>
+
+    <div class="compare">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent2)">❌ BROKEN</span>
+        </div>
+        <pre style="color:#888"><span class="cm">// 5 bugs hidden here — spot them!</span>
+import java.util.Scanner
+
+public class Fix {
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in)
+
+    System.out.print("Enter marks: ")
+    int marks = sc.nextint();
+
+    int[] results = int[marks];
+    for (int i = 0, i &lt; marks, i++) {
+      results[i] = sc.nextInt()
+    }
+
+    for (int j = 0; j &lt; results.length; j++)
+      System.out.println(Results[j]);
+    }
+  }
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent)">✅ FIXED</span>
+        </div>
+        <pre><span class="kw">import</span> java.util.Scanner<span style="color:var(--accent)">;</span>  <span class="cm">// 1: missing ;</span>
+
+<span class="kw">public class</span> <span class="cls">Fix</span> {
+  <span class="kw">public static void</span> <span class="met">main</span>(<span class="cls">String</span>[] args) {
+    <span class="cls">Scanner</span> sc = <span class="kw">new</span> <span class="cls">Scanner</span>(System.in)<span style="color:var(--accent)">;</span>  <span class="cm">// 2: missing ;</span>
+
+    System.out.<span class="met">print</span>(<span class="str">"Enter marks: "</span>);
+    <span class="kw">int</span> marks = sc.<span style="color:var(--accent)">nextInt</span>();  <span class="cm">// 3: nextint → nextInt</span>
+
+    <span class="kw">int</span>[] results = <span style="color:var(--accent)">new int</span>[marks];  <span class="cm">// 4: missing 'new'</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span><span style="color:var(--accent)">;</span> i &lt; marks<span style="color:var(--accent)">;</span> i++) {  <span class="cm">// 5: commas → semicolons</span>
+      results[i] = sc.<span class="met">nextInt</span>();
+    }
+
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">0</span>; j &lt; results.length; j++) {
+      System.out.<span class="met">println</span>(<span style="color:var(--accent)">results</span>[j]);  <span class="cm">// 6: Results → results</span>
+    }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:16px">⚡ Common mistakes checklist: <strong>1)</strong> Missing semicolons <strong>2)</strong> Wrong capitalisation (Java is case-sensitive) <strong>3)</strong> Commas instead of semicolons in for-loops <strong>4)</strong> Missing <em>new</em> when creating arrays <strong>5)</strong> Wrong Scanner method names</div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 06 PSEUDOCODE ↔ JAVA ══ -->
+  <section class="section" id="pseudo">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Pseudocode ↔ Java</h2>
+    </div>
+
+    <!-- Example 1 -->
+    <p style="color:var(--muted); margin-bottom:12px; font-size:0.85rem">Example 1 — Calculate average of N numbers</p>
+    <div class="compare">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent4)">PSEUDOCODE</span>
+        </div>
+        <pre style="color:#bbbbd0">BEGIN
+  INPUT n
+  SET total = 0
+  FOR i = 1 TO n
+    INPUT num
+    SET total = total + num
+  END FOR
+  SET average = total / n
+  OUTPUT average
+END</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent3)">JAVA</span>
+        </div>
+        <pre><span class="cls">Scanner</span> sc = <span class="kw">new</span> <span class="cls">Scanner</span>(System.in);
+
+System.out.<span class="met">print</span>(<span class="str">"Enter n: "</span>);
+<span class="kw">int</span> n = sc.<span class="met">nextInt</span>();
+<span class="kw">double</span> total = <span class="num">0</span>;
+
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt;= n; i++) {
+    System.out.<span class="met">print</span>(<span class="str">"Number: "</span>);
+    total += sc.<span class="met">nextDouble</span>();
+}
+
+<span class="kw">double</span> average = total / n;
+System.out.<span class="met">println</span>(<span class="str">"Average: "</span> + average);</pre>
+      </div>
+    </div>
+
+    <!-- Example 2 -->
+    <p style="color:var(--muted); margin: 20px 0 12px; font-size:0.85rem">Example 2 — Check if number is even or odd</p>
+    <div class="compare">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent4)">PSEUDOCODE</span>
+        </div>
+        <pre style="color:#bbbbd0">BEGIN
+  INPUT number
+  IF number MOD 2 = 0 THEN
+    OUTPUT "Even"
+  ELSE
+    OUTPUT "Odd"
+  END IF
+END</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+          <span class="code-lang" style="color:var(--accent3)">JAVA</span>
+        </div>
+        <pre><span class="cls">Scanner</span> sc = <span class="kw">new</span> <span class="cls">Scanner</span>(System.in);
+
+System.out.<span class="met">print</span>(<span class="str">"Enter number: "</span>);
+<span class="kw">int</span> number = sc.<span class="met">nextInt</span>();
+
+<span class="kw">if</span> (number % <span class="num">2</span> == <span class="num">0</span>) {
+    System.out.<span class="met">println</span>(<span class="str">"Even"</span>);
+} <span class="kw">else</span> {
+    System.out.<span class="met">println</span>(<span class="str">"Odd"</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- Cheatsheet -->
+    <div class="code-block" style="margin-top:20px; overflow:auto">
+      <div class="code-header">
+        <div class="code-dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">PSEUDOCODE → JAVA KEYWORD MAP</span>
+      </div>
+      <table>
+        <thead><tr><th>Pseudocode</th><th>Java Equivalent</th></tr></thead>
+        <tbody>
+          <tr><td>BEGIN / END</td><td>{ }</td></tr>
+          <tr><td>INPUT x</td><td>x = keyboard.nextInt();</td></tr>
+          <tr><td>OUTPUT / PRINT x</td><td>System.out.println(x);</td></tr>
+          <tr><td>SET x = 0</td><td>int x = 0;</td></tr>
+          <tr><td>IF … THEN … ELSE … END IF</td><td>if (…) { } else { }</td></tr>
+          <tr><td>FOR i = 1 TO n</td><td>for (int i = 1; i &lt;= n; i++)</td></tr>
+          <tr><td>WHILE condition DO</td><td>while (condition) { }</td></tr>
+          <tr><td>MOD</td><td>%</td></tr>
+          <tr><td>DIV (integer division)</td><td>/ (with int types)</td></tr>
+          <tr><td>AND / OR / NOT</td><td>&amp;&amp; / || / !</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ══ 07 QUIZ ══ -->
+  <section class="section" id="quiz">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Quick Quiz — Test Yourself</h2>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-block">
+      <div class="quiz-q">Q1. What is the output of: <code style="color:var(--accent3); font-family:'Space Mono',monospace">System.out.println(7 / 2);</code></div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false, 'q1')">A) 3.5</button>
+        <button class="quiz-opt" onclick="answer(this, true,  'q1')">B) 3</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q1')">C) 4</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q1')">D) 3.0</button>
+      </div>
+      <div id="q1" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-block">
+      <div class="quiz-q">Q2. Which Scanner method do you use to read a full line of text?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false, 'q2')">A) nextString()</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q2')">B) next()</button>
+        <button class="quiz-opt" onclick="answer(this, true,  'q2')">C) nextLine()</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q2')">D) readLine()</button>
+      </div>
+      <div id="q2" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-block">
+      <div class="quiz-q">Q3. What does <code style="color:var(--accent3); font-family:'Space Mono',monospace">17 % 5</code> evaluate to?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false, 'q3')">A) 3</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q3')">B) 0</button>
+        <button class="quiz-opt" onclick="answer(this, true,  'q3')">C) 2</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q3')">D) 1</button>
+      </div>
+      <div id="q3" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-block">
+      <div class="quiz-q">Q4. What happens when you cast <code style="color:var(--accent3); font-family:'Space Mono',monospace">(int) 9.9</code>?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false, 'q4')">A) 10 — it rounds up</button>
+        <button class="quiz-opt" onclick="answer(this, true,  'q4')">B) 9 — it truncates (cuts off) the decimal</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q4')">C) Error — you can't cast double to int</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q4')">D) 9.0</button>
+      </div>
+      <div id="q4" class="quiz-feedback"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-block">
+      <div class="quiz-q">Q5. Which line correctly declares and allocates an int array of size 5?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false, 'q5')">A) int arr[] = int[5];</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q5')">B) int arr = new int(5);</button>
+        <button class="quiz-opt" onclick="answer(this, true,  'q5')">C) int[] arr = new int[5];</button>
+        <button class="quiz-opt" onclick="answer(this, false, 'q5')">D) int arr[5];</button>
+      </div>
+      <div id="q5" class="quiz-feedback"></div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<footer>// Good luck on your test — you've got this 🚀 // Java Study Hack</footer>
+
+<script>
+const explanations = {
+  q1: "✓ Correct! In Java, dividing two integers always returns an integer. 7/2 = 3 (the .5 is dropped). Use 7.0/2 or (double)7/2 to get 3.5.",
+  q2: "✓ Correct! nextLine() reads the entire line including spaces. next() stops at the first space.",
+  q3: "✓ Correct! 17 ÷ 5 = 3 remainder 2. So 17 % 5 = 2.",
+  q4: "✓ Correct! Casting to int always truncates (cuts off) — it does NOT round. Use Math.round() to round properly.",
+  q5: "✓ Correct! The proper syntax is: int[] arr = new int[5]; — you need 'new' and square brackets."
+};
+
+const wrongs = {
+  q1: "✗ Wrong. Both values are integers so Java does integer division — result is 3, not 3.5.",
+  q2: "✗ Wrong. nextString() doesn't exist. readLine() is from BufferedReader. Use nextLine() for Scanner.",
+  q3: "✗ Wrong. 17 ÷ 5 = 3 with remainder 2, so 17 % 5 = 2.",
+  q4: "✗ Wrong. (int)9.9 gives 9 — it truncates, it does NOT round to 10.",
+  q5: "✗ Wrong. You must use 'new' keyword: int[] arr = new int[5];"
+};
+
+function answer(btn, correct, qid) {
+  const block = btn.closest('.quiz-block');
+  if (block.dataset.answered) return;
+  block.dataset.answered = "true";
+
+  const opts = block.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.style.cursor = 'default');
+
+  const fb = document.getElementById(qid);
+  if (correct) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback feedback-correct';
+    fb.textContent = explanations[qid];
+  } else {
+    btn.classList.add('wrong');
+    fb.className = 'quiz-feedback feedback-wrong';
+    fb.textContent = wrongs[qid];
+  }
+  fb.style.display = 'block';
+}
+</script>
+</body>
+</html>
